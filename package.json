@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
   },
   "keywords": [
     "Jashan"
@@ -13,6 +13,10 @@
   "author": "Jashan",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "module": "^1.2.5",
+    "mongoose": "^8.9.5",
     "nodemon": "^3.1.9"
   },
   "devDependencies": {
