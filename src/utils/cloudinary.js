@@ -1,44 +1,37 @@
 import {v2 as cloudinary} from "cloudinary"
-import fs, { unlinkSync } from "fs"
+import fs from "fs"
 
- // Configuration
- cloudinary.config({ 
-    cloud_name: 'process.env.CLOUDINARY_CLOUD_NAME', 
-    api_key: 'process.env.CLOUDINARY_API_KEY', 
-    api_secret: 'process.env.CLOUDINARY_API_SECRET' // Click 'View API Keys' above to copy your API secret
+// Configuration
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-
-const uploadOnCloudinary = async (localFilePath) => 
-    {
-        try {
-            if(!localFilePath) return null;
-            //upload file on cloudinary
-            const response  = await   cloudinary.uploader.upload(localFilePath , {resource_type: "auto"})
-            console.log("File uploaded successfully",response.url)
-            return response;
-            //delete file from local storage
+const uploadOnCloudinary = async (localFilePath) => {
+    try {
+        if (!localFilePath) return null;
+        
+        // Upload file on cloudinary
+        const response = await cloudinary.uploader.upload(localFilePath, {
+            resource_type: "auto"
+        });
+        
+        // File has been uploaded successfully
+        //console.log("File uploaded successfully", response.url);
+        fs.unlinkSync(localFilePath); // Delete the temporary file from local storage
+        // Delete the temporary file from local storage
+        fs.unlinkSync(localFilePath);
+        
+        return response;
+    } catch (error) {
+        // Delete the temporary file from local storage even if upload failed
+        if (fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath);
         }
-        catch(error)
-        {
-            fs.unlinkSync(localFilePath) //delete file from local storage
-            console.log("Error while uploading file on cloudinary",error)
-            return null;
-        }
+        console.log("Error while uploading file on cloudinary", error);
+        return null;
     }
-
-
-
-const uploadResult = await cloudinary.uploader
-.upload(
-    'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-        public_id: 'shoes',
-    }
-)
-.catch((error) => {
-    console.log(error);
-});
-
-console.log(uploadResult);
+}
 
 export {uploadOnCloudinary}
