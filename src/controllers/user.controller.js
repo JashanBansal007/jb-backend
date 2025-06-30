@@ -175,9 +175,9 @@ const logoutUser = asyncHandler(async(req,res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
-            $set:
+            $unset:
             {
-                refreshToken: undefined
+                refreshToken: 1 //this removes feild from document
             }
         },
         {
